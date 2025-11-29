@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NoteGen - Generate Notes from Videos & Meetings</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📝 NoteGen</h1>
+            <p>Generate comprehensive notes from YouTube videos and Google Meet recordings</p>
+        </header>
+        
+        <nav>
+            <button class="nav-btn active" data-tab="generate">Generate Notes</button>
+            <button class="nav-btn" data-tab="history">History</button>
+        </nav>
+        
+        <main>
+            <!-- Generate Notes Tab -->
+            <div id="generate-tab" class="tab-content active">
+                <form id="youtube-form">
+                    <div class="form-group">
+                        <label for="youtube-url">YouTube Video URL</label>
+                        <input 
+                            type="url" 
+                            id="youtube-url" 
+                            name="url" 
+                            placeholder="https://www.youtube.com/watch?v=..." 
+                            required
+                        >
+                    </div>
+                    
+                    <div class="customization-options">
+                        <div class="option-group">
+                            <label for="detail-level">Detail Level</label>
+                            <select id="detail-level" name="detail_level">
+                                <option value="brief">Brief</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="detailed">Detailed</option>
+                            </select>
+                        </div>
+                        
+                        <div class="option-group">
+                            <label>Format</label>
+                            <div class="radio-group">
+                                <div class="radio-option selected" data-value="bullet">
+                                    <input type="radio" name="format_type" value="bullet" checked>
+                                    <span>Bullet Points</span>
+                                </div>
+                                <div class="radio-option" data-value="paragraph">
+                                    <input type="radio" name="format_type" value="paragraph">
+                                    <span>Paragraphs</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="generate-btn" id="generate-btn">
+                        Generate Notes
+                    </button>
+                </form>
+                
+                <div id="loading" class="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Generating notes... This may take a moment.</p>
+                </div>
+                
+                <div id="results" class="results">
+                    <h2>Generated Notes</h2>
+                    <div id="notes-content" class="notes-content"></div>
+                </div>
+                
+                <div id="error" class="error" style="display: none;"></div>
+            </div>
+            
+            <!-- History Tab -->
+            <div id="history-tab" class="tab-content">
+                <div class="filter-bar">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="youtube">YouTube</button>
+                    <button class="filter-btn" data-filter="meet">Google Meet</button>
+                </div>
+                
+                <div id="history-list" class="history-list"></div>
+                
+                <div id="note-detail" class="note-detail">
+                    <button class="back-btn" id="back-btn">← Back to History</button>
+                    <div id="detail-content"></div>
+                </div>
+                
+                <div id="empty-state" class="empty-state" style="display: none;">
+                    <h3>No notes yet</h3>
+                    <p>Generate your first note from a YouTube video to get started!</p>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
+
+

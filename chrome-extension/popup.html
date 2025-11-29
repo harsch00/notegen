@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            width: 300px;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+        }
+        h2 {
+            margin: 0 0 15px 0;
+            color: #667eea;
+            font-size: 1.3em;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .status.recording {
+            background: #fee;
+            color: #c33;
+        }
+        .status.idle {
+            background: #efe;
+            color: #3c3;
+        }
+        .status.error {
+            background: #fee;
+            color: #c33;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .start-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .stop-btn {
+            background: #c33;
+            color: white;
+        }
+        .stop-btn:hover {
+            background: #a22;
+        }
+        .download-btn {
+            background: #00832d;
+            color: white;
+        }
+        .download-btn:hover {
+            background: #006b24;
+        }
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .options {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .option-group {
+            margin-bottom: 12px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            color: #666;
+        }
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+        .radio-group {
+            display: flex;
+            gap: 8px;
+        }
+        .radio-option {
+            flex: 1;
+            padding: 8px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.3s;
+        }
+        .radio-option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        .radio-option input {
+            display: none;
+        }
+        .info {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h2>📝 NoteGen Recorder</h2>
+    
+    <div id="status" class="status idle">Ready to record</div>
+    
+    <button id="start-btn" class="start-btn">Start Recording</button>
+    <button id="stop-btn" class="stop-btn" style="display: none; margin-top: 10px;">Stop Recording</button>
+    <button id="download-btn" class="download-btn" style="display: none; margin-top: 10px;">Download Recording</button>
+    
+    <div class="options">
+        <div class="option-group">
+            <label>Detail Level</label>
+            <select id="detail-level">
+                <option value="brief">Brief</option>
+                <option value="medium" selected>Medium</option>
+                <option value="detailed">Detailed</option>
+            </select>
+        </div>
+        
+        <div class="option-group">
+            <label>Format</label>
+            <div class="radio-group">
+                <div class="radio-option selected" data-value="bullet">
+                    <input type="radio" name="format" value="bullet" checked>
+                    <span>Bullets</span>
+                </div>
+                <div class="radio-option" data-value="paragraph">
+                    <input type="radio" name="format" value="paragraph">
+                    <span>Paragraphs</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="info">
+        Make sure you're on a Google Meet page to start recording.
+    </div>
+    
+    <script src="popup.js"></script>
+</body>
+</html>
+
+
