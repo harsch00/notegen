@@ -6,15 +6,12 @@
   "permissions": [
     "tabs",
     "activeTab",
-    "storage",
-    "tabCapture"
+    "storage"
   ],
   "host_permissions": [
-    "https://meet.google.com/*"
+    "https://meet.google.com/*",
+    "http://localhost:5000/*"
   ],
-  "background": {
-    "service_worker": "background.js"
-  },
   "content_scripts": [
     {
       "matches": ["https://meet.google.com/*"],

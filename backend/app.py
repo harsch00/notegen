@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 
 from gemini_service import generate_notes_from_youtube, generate_notes_from_audio
 from storage import add_note, get_all_notes, get_note_by_id
-from audio_processor import save_audio_file, cleanup_file
+from audio_processor import save_audio_file, cleanup_file, convert_to_mp3
 
 app = Flask(__name__, static_folder=None)
 CORS(app)  # Enable CORS for frontend
@@ -84,10 +84,16 @@ def generate_audio_notes():
             print(f"ERROR saving file: {str(e)}")
             return jsonify({'error': f'Error saving audio file: {str(e)}'}), 500
         
+        mp3_path = None
         try:
-            # Generate notes using Gemini
+            # Convert to MP3 for Gemini (handles webm/webm;opus etc.)
+            print("Converting audio to MP3 for Gemini...")
+            mp3_path = convert_to_mp3(audio_path)
+            print(f"Converted MP3 path: {mp3_path}")
+
+            # Generate notes using Gemini on MP3
             print("Calling generate_notes_from_audio...")
-            notes_content = generate_notes_from_audio(audio_path, detail_level, format_type)
+            notes_content = generate_notes_from_audio(mp3_path, detail_level, format_type)
             print(f"Notes generated, length: {len(notes_content)}")
             
             # Save to storage
@@ -114,10 +120,15 @@ def generate_audio_notes():
             traceback.print_exc()
             return jsonify({'error': f'Error generating notes: {str(e)}'}), 500
         finally:
-            # Clean up temporary file
+            # Clean up temporary files
             try:
                 cleanup_file(audio_path)
-            except:
+            except Exception:
+                pass
+            try:
+                if mp3_path:
+                    cleanup_file(mp3_path)
+            except Exception:
                 pass
         
     except Exception as e:

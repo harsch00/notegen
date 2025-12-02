@@ -37,38 +37,26 @@ document.querySelectorAll('.radio-option').forEach(option => {
 });
 
 // Start recording button
-document.getElementById('start-btn').addEventListener('click', async () => {
-    chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
+document.getElementById('start-btn').addEventListener('click', () => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         const currentTab = tabs[0];
-        
-        if (!currentTab.url || !currentTab.url.includes('meet.google.com')) {
+        if (!currentTab || !currentTab.url || !currentTab.url.includes('meet.google.com')) {
             alert('Please open a Google Meet page first');
             return;
         }
-        
-        // Save options to storage for content script
+
+        // Save options for content script
         const detailLevel = document.getElementById('detail-level').value;
         const formatType = document.querySelector('input[name="format"]:checked').value;
-        chrome.storage.local.set({ 
-            detailLevel: detailLevel,
-            formatType: formatType
-        });
-        
-        // Request stream ID from background
-        chrome.runtime.sendMessage({ action: 'startRecording' }, (response) => {
+        chrome.storage.local.set({ detailLevel, formatType });
+
+        chrome.tabs.sendMessage(currentTab.id, { action: 'startRecording' }, (response) => {
+            if (chrome.runtime.lastError) {
+                alert('Error: ' + chrome.runtime.lastError.message);
+                return;
+            }
             if (response && response.success) {
-                // Send stream ID to content script
-                chrome.tabs.sendMessage(currentTab.id, {
-                    action: 'startRecording',
-                    streamId: response.streamId
-                }, (contentResponse) => {
-                    if (contentResponse && contentResponse.success) {
-                        updateUI(true);
-                    } else {
-                        alert('Failed to start recording. Make sure you grant microphone permissions.');
-                        updateUI(false);
-                    }
-                });
+                updateUI(true);
             } else {
                 alert('Failed to start recording: ' + (response?.error || 'Unknown error'));
             }
