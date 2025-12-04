@@ -6,7 +6,8 @@ import sys
 # Add backend directory to path for imports
 sys.path.insert(0, os.path.dirname(__file__))
 
-from gemini_service import generate_notes_from_youtube, generate_notes_from_audio
+from youtube_service import generate_notes_from_youtube
+from gemini_service import generate_notes_from_audio
 from storage import add_note, get_all_notes, get_note_by_id
 from audio_processor import save_audio_file, cleanup_file, convert_to_mp3
 
@@ -28,11 +29,8 @@ def generate_youtube_notes():
         if not youtube_url:
             return jsonify({'error': 'YouTube URL is required'}), 400
         
-        # Generate notes using Gemini
-        notes_content = generate_notes_from_youtube(youtube_url, detail_level, format_type)
-        
-        # Extract video title from URL or use default
-        video_title = youtube_url.split('v=')[-1].split('&')[0] if 'v=' in youtube_url else 'YouTube Video'
+        # Generate notes using transcript extraction
+        notes_content, video_title, video_id = generate_notes_from_youtube(youtube_url, detail_level, format_type)
         
         # Save to storage
         note = add_note(
@@ -41,6 +39,8 @@ def generate_youtube_notes():
             content=notes_content,
             metadata={
                 'url': youtube_url,
+                'video_id': video_id,
+                'video_title': video_title,
                 'detail_level': detail_level,
                 'format_type': format_type
             }

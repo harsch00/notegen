@@ -79,8 +79,13 @@ document.getElementById('youtube-form').addEventListener('submit', async (e) => 
         const data = await response.json();
         
         if (response.ok && data.success) {
-            // Show results
-            document.getElementById('notes-content').textContent = data.note.content;
+            // Show results - render markdown
+            const notesContent = document.getElementById('notes-content');
+            if (typeof marked !== 'undefined') {
+                notesContent.innerHTML = marked.parse(data.note.content);
+            } else {
+                notesContent.textContent = data.note.content;
+            }
             document.getElementById('results').classList.add('show');
             
             // Reload history if on history tab
@@ -150,7 +155,7 @@ function displayHistory(notes) {
                 <span class="note-type ${note.type}">${note.type === 'youtube' ? 'YouTube' : 'Meet'}</span>
             </div>
             <div class="note-date">${formatDate(note.timestamp)}</div>
-            <div class="note-preview">${escapeHtml(note.content.substring(0, 200))}...</div>
+            <div class="note-preview">${escapeHtml(note.content.substring(0, 200).replace(/#{1,6}\s+/g, '').replace(/\*\*/g, '').replace(/\*/g, ''))}...</div>
         </div>
     `).join('');
 }
@@ -165,6 +170,14 @@ async function showNoteDetail(noteId) {
             const note = data.note;
             const detailContent = document.getElementById('detail-content');
             
+            // Render markdown content
+            let renderedContent;
+            if (typeof marked !== 'undefined') {
+                renderedContent = marked.parse(note.content);
+            } else {
+                renderedContent = escapeHtml(note.content);
+            }
+            
             detailContent.innerHTML = `
                 <div class="note-card ${note.type}">
                     <div class="note-header">
@@ -172,7 +185,7 @@ async function showNoteDetail(noteId) {
                         <span class="note-type ${note.type}">${note.type === 'youtube' ? 'YouTube' : 'Meet'}</span>
                     </div>
                     <div class="note-date">${formatDate(note.timestamp)}</div>
-                    <div class="notes-content" style="margin-top: 20px;">${escapeHtml(note.content)}</div>
+                    <div class="notes-content" style="margin-top: 20px;">${renderedContent}</div>
                 </div>
             `;
             
